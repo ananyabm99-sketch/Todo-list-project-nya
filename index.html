@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My To-Do List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <time id="currentDate" class="current-date"></time>
+        <h1>My To-Do List 📝</h1>
+        <p class="subtitle">
+            Organize your day, one task at a time.
+        </p>
+
+        <!-- Input area -->
+        <div class="input-area">
+            <input
+                type="text"
+                id="taskInput"
+                placeholder="Enter your task..."
+                autocomplete="off"
+            >
+            <button id="addBtn">Add Task</button>
+        </div>
+
+        <!-- Empty task list: no default tasks -->
+        <ul id="taskList"></ul>
+
+        <p class="footer">
+            Small steps lead to big achievements ✨
+        </p>
+
+    </div>
+
+    <script>
+        const currentDate = document.getElementById("currentDate");
+        const taskInput = document.getElementById("taskInput");
+        const addBtn = document.getElementById("addBtn");
+        const taskList = document.getElementById("taskList");
+
+        function updateCurrentDate() {
+            const now = new Date();
+            const localDate = [
+                now.getFullYear(),
+                String(now.getMonth() + 1).padStart(2, "0"),
+                String(now.getDate()).padStart(2, "0")
+            ].join("-");
+
+            currentDate.dateTime = localDate;
+            currentDate.textContent = new Intl.DateTimeFormat(undefined, {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            }).format(now);
+        }
+
+        updateCurrentDate();
+
+        // Function to add a new task
+        function addTask() {
+            const taskText = taskInput.value.trim();
+
+            // Check if the input is empty
+            if (taskText === "") {
+                alert("Please enter a task!");
+                return;
+            }
+
+            // Create the list item
+            const li = document.createElement("li");
+
+            // Create the checkbox
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.className = "task-checkbox";
+
+            // Create the task text
+            const span = document.createElement("span");
+            span.textContent = taskText;
+
+            // Create the delete button
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.className = "delete-btn";
+
+            // Add elements to the list item
+            li.appendChild(checkbox);
+            li.appendChild(span);
+            li.appendChild(deleteBtn);
+
+            // Add the task to the webpage
+            taskList.appendChild(li);
+
+            // Clear the input field
+            taskInput.value = "";
+            taskInput.focus();
+        }
+
+        // Add task when the button is clicked
+        addBtn.addEventListener("click", addTask);
+
+        // Add task when Enter is pressed
+        taskInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                addTask();
+            }
+        });
+
+        // Mark tasks as completed or pending
+        taskList.addEventListener("change", function(event) {
+            if (event.target.classList.contains("task-checkbox")) {
+                const li = event.target.parentElement;
+
+                li.classList.toggle(
+                    "completed",
+                    event.target.checked
+                );
+            }
+        });
+
+        // Delete tasks
+        taskList.addEventListener("click", function(event) {
+            if (event.target.classList.contains("delete-btn")) {
+                event.target.parentElement.remove();
+            }
+        });
+    </script>
+
+</body>
+</html>
